@@ -1,6 +1,6 @@
 #' Expand constant value into long tibble
 #'
-#' @description The lowerGPreff model functions expect data in a long format,
+#' @description The epiwave model functions expect data in a long format,
 #'  which is structed to have a value for every unique date and jurisdiction
 #'  pair. This function create a tibble of this structure out of a single
 #'  value that should be replicated in each cell.
@@ -15,7 +15,7 @@
 #' @return long tibble with constant value replicated
 #' @export
 #Assign superclass structure for timeseries data (i.e. distributions)
-create_lowerGPreff_timeseries <- function (dates,
+create_epiwave_timeseries <- function (dates,
                                            jurisdictions,
                                            value) {
 
@@ -26,7 +26,7 @@ create_lowerGPreff_timeseries <- function (dates,
     #dplyr::mutate(!!col_name := constant_val) |>
     tibble::tibble()
 
-  class(long_combined) <- c("lowerGPreff_timeseries", class(long_combined))
+  class(long_combined) <- c("epiwave_timeseries", class(long_combined))
 
   long_combined
 
@@ -37,7 +37,7 @@ create_lowerGPreff_timeseries <- function (dates,
 
 #' Expand distribution into long tibble
 #'
-#' @description The lowerGPreff model functions expect data in a long format,
+#' @description The epiwave model functions expect data in a long format,
 #'  which is structured to have a value for every unique date and jurisdiction
 #'  pair. This function create a tibble of this structure out of a single
 #'  distribution that should be replicated in each cell.
@@ -51,16 +51,16 @@ create_lowerGPreff_timeseries <- function (dates,
 #'
 #' @return long tibble with distribution replicated
 #' @export
-create_lowerGPreff_massfun_timeseries <- function (dates,
+create_epiwave_massfun_timeseries <- function (dates,
                                                 jurisdictions,
                                                 value) {
 
-  timeseries <- lowerGPreff::create_lowerGPreff_timeseries(
+  timeseries <- epiwave::create_epiwave_timeseries(
     dates = infection_days,
     jurisdictions = jurisdictions,
     value = list(value))
 
-  class(timeseries) <- c("lowerGPreff_massfun_timeseries",
+  class(timeseries) <- c("epiwave_massfun_timeseries",
                          class(value),  # CHECK THIS
                          class(timeseries))
   timeseries
@@ -75,11 +75,11 @@ create_lowerGPreff_massfun_timeseries <- function (dates,
 #'
 #' @return long tibble with fixed value replicated
 #' @export
-create_lowerGPreff_fixed_timeseries <- function (dates,
+create_epiwave_fixed_timeseries <- function (dates,
                                                  jurisdictions,
                                                  value) {
 
-  timeseries <- lowerGPreff::create_lowerGPreff_timeseries(
+  timeseries <- epiwave::create_epiwave_timeseries(
     dates = infection_days,
     jurisdictions = jurisdictions,
     value = value)
@@ -88,7 +88,7 @@ create_lowerGPreff_fixed_timeseries <- function (dates,
   #   notif_full_delay_dist,
   #   distribution = value)
 
-  class(timeseries) <- c("lowerGPreff_fixed_timeseries",
+  class(timeseries) <- c("epiwave_fixed_timeseries",
                                       class(timeseries))
   timeseries
 

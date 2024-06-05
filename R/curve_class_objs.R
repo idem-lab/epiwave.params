@@ -4,7 +4,7 @@
 #' @param min_delay optional specification for minimum delay
 #' @param max_delay optional specification for maxiumum delay
 #'
-#' @return lowerGPreff_distribution object
+#' @return epiwave_distribution object
 #' @export
 parametric_dist_to_curve <- function (dist,
                                       min_delay = NULL,
@@ -21,7 +21,7 @@ parametric_dist_to_curve <- function (dist,
   # when distributional::cdf is applied to a sequence (of x) it returns a list
   cdf_fun <- function(x) distributional::cdf(dist, x)[[1]]
 
-  out <- create_lowerGPreff_massfun(
+  out <- create_epiwave_massfun(
     min_delay, max_delay,
     cdf_fun, normalise = FALSE)
   out
@@ -38,7 +38,7 @@ parametric_dist_to_curve <- function (dist,
 #' @param day_diff_col days since onset of infection
 #' @param value_col value on that many days after infection onset
 #'
-#' @return lowerGPreff_distribution object
+#' @return epiwave_distribution object
 #' @export
 data_to_curve <- function (day_diff_col,
                            value_col) {
@@ -46,8 +46,8 @@ data_to_curve <- function (day_diff_col,
   curve_df <- data.frame(delays = day_diff_col,
                          mass = value_col)
 
-  class(curve_df) <- c("lowerGPreff_curve_massfun",
-                            "lowerGPreff_massfun",
+  class(curve_df) <- c("epiwave_curve_massfun",
+                            "epiwave_massfun",
                             class(curve_df))
 
   curve_df

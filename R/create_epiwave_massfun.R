@@ -1,13 +1,13 @@
-#' Create lowerGPreff_massfun object
+#' Create epiwave_massfun object
 #'
 #' @param min_delay miniumum delay
 #' @param max_delay maxiumum delay
 #' @param cdf_fun function for creating the cdf that defines the mass
 #' @param normalise whether the mass should be normalised
 #'
-#' @return lowerGPreff_massfun object
+#' @return epiwave_massfun object
 #' @export
-create_lowerGPreff_massfun <- function (min_delay,
+create_epiwave_massfun <- function (min_delay,
                                         max_delay,
                                         cdf_fun,
                                         normalise = c(TRUE, FALSE)) {
@@ -34,13 +34,13 @@ create_lowerGPreff_massfun <- function (min_delay,
       delays, mass
     )
 
-  class(delay_massfun) <- c("lowerGPreff_massfun", class(delay_massfun))
+  class(delay_massfun) <- c("epiwave_massfun", class(delay_massfun))
 
   if (normalise) {
-    class(delay_massfun) <- c("lowerGPreff_distribution_massfun", class(delay_massfun))
+    class(delay_massfun) <- c("epiwave_distribution_massfun", class(delay_massfun))
   }
   if (!normalise) {
-    class(delay_massfun) <- c("lowerGPreff_curve_massfun", class(delay_massfun))
+    class(delay_massfun) <- c("epiwave_curve_massfun", class(delay_massfun))
   }
 
   delay_massfun
@@ -53,7 +53,7 @@ create_lowerGPreff_massfun <- function (min_delay,
 #' @param min_delay optional specification for minimum delay
 #' @param max_delay optional specification for maxiumum delay
 #'
-#' @return lowerGPreff_distribution object
+#' @return epiwave_distribution object
 #' @export
 data_to_distribution <- function (data,
                                   min_delay = NULL,
@@ -69,7 +69,7 @@ data_to_distribution <- function (data,
     max_delay <- ceiling(quantile(cdf_fun, 0.99))
   }
 
-  out <- create_lowerGPreff_massfun(
+  out <- create_epiwave_massfun(
     min_delay, max_delay,
     cdf_fun, normalise = TRUE)
   out
@@ -84,7 +84,7 @@ data_to_distribution <- function (data,
 #'
 #' @importFrom distributional cdf
 #'
-#' @return lowerGPreff_distribution object
+#' @return epiwave_distribution object
 #' @export
 parametric_dist_to_distribution <- function (dist,
                                              min_delay = NULL,
@@ -101,14 +101,14 @@ parametric_dist_to_distribution <- function (dist,
   # when distributional::cdf is applied to a sequence (of x) it returns a list
   cdf_fun <- function(x) distributional::cdf(dist, x)[[1]]
 
-  out <- create_lowerGPreff_massfun(
+  out <- create_epiwave_massfun(
     min_delay, max_delay,
     cdf_fun, normalise = TRUE)
   out
 
 }
 
-#' Default plot function for lowerGPreff_massfun object
+#' Default plot function for epiwave_massfun object
 #'
 #' @param x x value
 #' @param y y value
@@ -117,7 +117,7 @@ parametric_dist_to_distribution <- function (dist,
 #' @return plot
 #'
 #' @export
-plot.lowerGPreff_massfun <- function (x, y, ...) {
+plot.epiwave_massfun <- function (x, y, ...) {
   barplot(x$mass, width = 1, names.arg = x$delays,
           xlab = "delay (days)",
           ylab = "probability")

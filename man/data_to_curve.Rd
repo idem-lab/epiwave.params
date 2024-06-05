@@ -12,7 +12,7 @@ data_to_curve(day_diff_col, value_col)
 \item{value_col}{value on that many days after infection onset}
 }
 \value{
-lowerGPreff_distribution object
+epiwave_distribution object
 }
 \description{
 For sero data the value col will be probability of testing

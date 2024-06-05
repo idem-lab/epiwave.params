@@ -2,7 +2,7 @@
 % Please edit documentation in R/add.R
 \name{add}
 \alias{add}
-\title{Default combine function for lowerGPreff_massfun objects}
+\title{Default combine function for epiwave_massfun objects}
 \usage{
 add(delay_massfun1, delay_massfun2, ...)
 }
@@ -14,8 +14,8 @@ add(delay_massfun1, delay_massfun2, ...)
 \item{...}{extra args}
 }
 \value{
-combined lowerGPreff massfuns
+combined epiwave massfuns
 }
 \description{
-Default combine function for lowerGPreff_massfun objects
+Default combine function for epiwave_massfun objects
 }

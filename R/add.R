@@ -1,10 +1,10 @@
-#' Default combine function for lowerGPreff_massfun objects
+#' Default combine function for epiwave_massfun objects
 #'
 #' @param delay_massfun1 first massfun object
 #' @param delay_massfun2 second massfun object
 #' @param ... extra args
 #'
-#' @return combined lowerGPreff massfuns
+#' @return combined epiwave massfuns
 #'
 #' @export
 add <- function(delay_massfun1, delay_massfun2, ...) {
@@ -12,7 +12,7 @@ add <- function(delay_massfun1, delay_massfun2, ...) {
 }
 
 #' @export
-add.lowerGPreff_massfun <- function (delay_massfun1,
+add.epiwave_massfun <- function (delay_massfun1,
                                      delay_massfun2, ...) {
 
   # add check that both inputs are same class (ie both distribution or

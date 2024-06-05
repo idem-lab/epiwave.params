@@ -14,7 +14,7 @@ parametric_dist_to_curve(dist, min_delay = NULL, max_delay = NULL)
 \item{max_delay}{optional specification for maxiumum delay}
 }
 \value{
-lowerGPreff_distribution object
+epiwave_distribution object
 }
 \description{
 Create distribution object from parametric distribution values
