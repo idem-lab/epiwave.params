@@ -55,7 +55,7 @@ create_epiwave_massfun_timeseries <- function (dates,
                                                 jurisdictions,
                                                 value) {
 
-  timeseries <- epiwave::create_epiwave_timeseries(
+  timeseries <- create_epiwave_timeseries(
     dates = infection_days,
     jurisdictions = jurisdictions,
     value = list(value))
@@ -79,7 +79,7 @@ create_epiwave_fixed_timeseries <- function (dates,
                                                  jurisdictions,
                                                  value) {
 
-  timeseries <- epiwave::create_epiwave_timeseries(
+  timeseries <- create_epiwave_timeseries(
     dates = infection_days,
     jurisdictions = jurisdictions,
     value = value)
