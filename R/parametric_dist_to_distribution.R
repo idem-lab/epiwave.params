@@ -1,8 +1,12 @@
 #' Create distribution object from parametric distribution values
 #'
 #' @param dist distributional package object
-#' @param min_delay optional specification for minimum delay
-#' @param max_delay optional specification for maxiumum delay
+#' @param min_delay_days optional specification for minimum delay
+#' @param max_delay_days optional specification for maxiumum delay
+#' @param min_delay_quantile optional specification for quantile to select
+#'  minimum delay IF min_delay_days hasn't been set
+#' @param max_delay_quantile optional specification for quantile to select
+#'  maxiumum delay IF max_delay_days hasn't been set
 #'
 #' @importFrom distributional cdf
 #'
