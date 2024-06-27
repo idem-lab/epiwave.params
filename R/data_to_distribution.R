@@ -1,16 +1,18 @@
 #' Create distribution object from data
 #'
-#' @param data delay data
+#' @param data_date_1 data column with first date to calculate delay from (earlier date)
+#' @param data_date_2 data column with second date to calculate delay from (later date)
 #' @param min_delay optional specification for minimum delay
 #' @param max_delay optional specification for maxiumum delay
 #'
 #' @return epiwave_distribution object
 #' @export
-data_to_distribution <- function (data,
+data_to_distribution <- function (data_date_1,
+                                  data_date_2,
                                   min_delay = NULL,
                                   max_delay = NULL) {
 
-  day_diff <- data$notif_date - data$sym_date
+  day_diff <- data_date_2 - data_date_1
   cdf_fun <- stats::ecdf(day_diff)
 
   if (is.null(min_delay)) {
