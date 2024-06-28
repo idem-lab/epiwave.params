@@ -4,9 +4,9 @@
 #' @param min_delay_days optional specification for minimum delay
 #' @param max_delay_days optional specification for maxiumum delay
 #' @param min_delay_quantile optional specification for quantile to select
-#'  minimum delay IF min_delay_days hasn't been set
+#'  minimum delay IF min_delay_days hasn't been set. Defaults to 0.
 #' @param max_delay_quantile optional specification for quantile to select
-#'  maxiumum delay IF max_delay_days hasn't been set
+#'  maxiumum delay IF max_delay_days hasn't been set. Defaults to 0.99.
 #'
 #' @importFrom distributional cdf
 #'
@@ -33,7 +33,7 @@ parametric_dist_to_distribution <- function (dist,
   cdf_fun <- function(x) distributional::cdf(dist, x)[[1]]
 
   out <- create_epiwave_massfun(
-    min_delay, max_delay,
+    min_delay_days, max_delay_days,
     cdf_fun, normalise = TRUE)
   out
 
