@@ -7,17 +7,17 @@
 #'
 #' @return epiwave_massfun object
 #' @export
-create_epiwave_massfun <- function (min_delay,
-                                    max_delay,
+create_epiwave_massfun <- function (min_delay_days,
+                                    max_delay_days,
                                     cdf_fun,
                                     normalise = c(TRUE, FALSE)) {
 
   delay_massfun <- data.frame(
-    delays = seq(min_delay, max_delay)
+    delays = seq(min_delay_days, max_delay_days)
   ) %>%
     dplyr::mutate(
-      upper = cdf_fun(delays + 1),
-      lower = cdf_fun(delays),
+      upper = cdf_fun(delays),
+      lower = cdf_fun(delays - 1),
       mass = upper - lower
     )
 

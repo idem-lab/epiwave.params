@@ -12,7 +12,8 @@ data <- data.frame(sym_date = rep(seq(from = as.Date('2023-01-2'),
                                       by = 'day'),
                                   each = 20))
 data$notif_date <- data$sym_date + rpois(nrow(data), 4)
-delay_probs_from_data <- data_to_distribution(data)
+delay_probs_from_data <- data_to_distribution(data_date_1 = data$sym_date,
+                                              data_date_2 = data$notif_date)
 
 
 combined <- add(delay_probs_from_dist,

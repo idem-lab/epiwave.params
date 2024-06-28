@@ -23,10 +23,10 @@ parametric_dist_to_distribution <- function (dist,
 
   # this quantile is the S3 method for quantile from distributional pkg
   if (is.null(min_delay_days)) {
-    min_delay <- floor(quantile(dist, min_delay_quantile))
+    min_delay_days <- floor(quantile(dist, min_delay_quantile))
   }
   if (is.null(max_delay_days)) {
-    max_delay <- ceiling(quantile(dist, max_delay_quantile))
+    max_delay_days <- ceiling(quantile(dist, max_delay_quantile))
   }
 
   # when distributional::cdf is applied to a sequence (of x) it returns a list

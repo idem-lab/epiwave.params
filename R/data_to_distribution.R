@@ -21,11 +21,11 @@ data_to_distribution <- function (data_date_1,
   day_diff <- data_date_2 - data_date_1
   cdf_fun <- stats::ecdf(day_diff)
 
-  if (is.null(min_delay)) {
-    min_delay <- floor(quantile(cdf_fun, min_delay_quantile))
+  if (is.null(min_delay_days)) {
+    min_delay_days <- floor(quantile(cdf_fun, min_delay_quantile))
   }
-  if (is.null(max_delay)) {
-    max_delay <- ceiling(quantile(cdf_fun, max_delay_quantile))
+  if (is.null(max_delay_days)) {
+    max_delay_days <- ceiling(quantile(cdf_fun, max_delay_quantile))
   }
 
   out <- create_epiwave_massfun(
