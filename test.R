@@ -4,8 +4,10 @@ library(epiwave.params)
 
 dist <- distributional::dist_weibull(shape = 2, scale = 3)
 delay_probs_from_dist <- parametric_dist_to_distribution(dist)
-
-
+# manual test
+manual_pmf <- (cdf(dist,0:7)[[1]] - cdf(dist,-1:6)[[1]])
+manual_pmf <- manual_pmf/sum(manual_pmf)
+all.equal(manual_pmf,delay_probs_from_dist$mass)
 
 data <- data.frame(sym_date = rep(seq(from = as.Date('2023-01-2'),
                                       to = as.Date('2023-03-4'),

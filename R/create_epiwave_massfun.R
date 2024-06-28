@@ -1,4 +1,9 @@
-#' Create epiwave_massfun object
+#' Create epiwave_massfun object, which is a two column data frame with delays
+#' denoting the number of discrete time steps (e.g., days) of a delay length,
+#' and mass denoting the probability of a delay having length between that time
+#' step, and the time step before. e.g., if delays = 3 and mass = 0.25, it means
+#' there is a 0.25 probability of the delay having a length between 2 and 3
+#' days.
 #'
 #' @param min_delay miniumum delay
 #' @param max_delay maxiumum delay
