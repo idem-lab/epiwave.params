@@ -13,7 +13,7 @@ add <- function(delay_massfun1, delay_massfun2, ...) {
 
 #' @export
 add.epiwave_massfun <- function (delay_massfun1,
-                                     delay_massfun2, ...) {
+                                 delay_massfun2, ...) {
 
   # add check that both inputs are same class (ie both distribution or
   # both curve)
@@ -26,10 +26,9 @@ add.epiwave_massfun <- function (delay_massfun1,
     delay2 = delay_massfun2$delay2) %>% # ie. sym to notif
     dplyr::left_join(delay_massfun1) %>%
     dplyr::left_join(delay_massfun2) %>%
-    dplyr::mutate(delay = delay1 + delay2) %>%
-    dplyr::group_by(delay) %>%
-    dplyr::summarise(mass =
-                       sum(massfun1 * massfun2))
+    dplyr::mutate(delay = .data$delay1 + .data$delay2) %>%
+    dplyr::group_by(.data$delay) %>%
+    dplyr::summarise(mass = sum(.data$massfun1 * .data$massfun2))
 
   # is there a way for p to inherit class of delay_massfun1 or 2?
   class(p) <- c(class(delay_massfun1), class(p))
