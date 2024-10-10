@@ -1,12 +1,34 @@
 Package: epiwave.params
-Type: Package
 Title: What the Package Does (Title Case)
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Authors@R: c(
+    person("Saras", "Windecker", role = c("aut", "cre"),
+           email = "saras.windecker@gmail.com",
+           comment = c(ORCID = "0000-0002-4870-8353")),
+    person("Tianxiao", "Hao", role = "aut",
+           comment = c(ORCID = "0000-0003-4363-1956")),
+    person("Nick", "Golding", role = "aut",
+           comment = c(ORCID = "0000-0001-8916-5570")),
+    person("Kate", "Senior", role = "ctb",
+           comment = c(ORCID = "0000-0003-1123-1472")))
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+License: Apache License (>= 2)
 Encoding: UTF-8
-LazyData: true
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
+URL: https://github.com/idem-lab/epiwave.params
+BugReports: https://github.com/idem-lab/epiwave.params/issues
+Suggests: 
+    R.rsp,
+    testthat (>= 3.0.0)
+Imports:
+    distributional,
+    dplyr,
+    graphics,
+    magrittr,
+    stats,
+    tibble,
+    tidyr
+VignetteBuilder: R.rsp
+Config/testthat/edition: 3

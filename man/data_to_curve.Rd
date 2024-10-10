@@ -16,6 +16,6 @@ epiwave_distribution object
 }
 \description{
 For sero data the value col will be probability of testing
- positive. For wastewater data the value col will be amount of viral
- material shed by individual compared to peak amount.
+positive. For wastewater data the value col will be amount of viral
+material shed by individual compared to peak amount.
 }
