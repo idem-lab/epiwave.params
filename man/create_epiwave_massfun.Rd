@@ -2,27 +2,37 @@
 % Please edit documentation in R/create_epiwave_massfun.R
 \name{create_epiwave_massfun}
 \alias{create_epiwave_massfun}
-\title{Create epiwave_massfun object}
+\title{Create epiwave_massfun object, which is a two column data frame with delays
+denoting the number of discrete time steps (e.g., days) of a delay length,
+and mass denoting the probability of a delay having length between that time
+step, and the time step before. e.g., if delays = 3 and mass = 0.25, it means
+there is a 0.25 probability of the delay having a length between 2 and 3
+days.}
 \usage{
 create_epiwave_massfun(
-  min_delay,
-  max_delay,
+  min_delay_days,
+  max_delay_days,
   cdf_fun,
   normalise = c(TRUE, FALSE)
 )
 }
 \arguments{
-\item{min_delay}{miniumum delay}
+\item{min_delay_days}{miniumum delay}
 
-\item{max_delay}{maxiumum delay}
+\item{max_delay_days}{maxiumum delay}
 
 \item{cdf_fun}{function for creating the cdf that defines the mass}
 
-\item{normalise}{whether the mass should be normalised}
+\item{normalise}{T/F whether the mass should be normalised}
 }
 \value{
 epiwave_massfun object
 }
 \description{
-Create epiwave_massfun object
+Create epiwave_massfun object, which is a two column data frame with delays
+denoting the number of discrete time steps (e.g., days) of a delay length,
+and mass denoting the probability of a delay having length between that time
+step, and the time step before. e.g., if delays = 3 and mass = 0.25, it means
+there is a 0.25 probability of the delay having a length between 2 and 3
+days.
 }

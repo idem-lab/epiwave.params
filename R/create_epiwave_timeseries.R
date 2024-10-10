@@ -94,4 +94,48 @@ create_epiwave_fixed_timeseries <- function (dates,
 
 }
 
+#' Expand distribution into long tibble
+#'
+#' @description The epiwave model functions expect data in a long format,
+#'  which is structured to have a value for every unique date and jurisdiction
+#'  pair. This function create a tibble of this structure out of a single
+#'  distribution that should be replicated in each cell.
+#'
+#' @param dates infection dates sequence
+#' @param jurisdictions jurisdiction names
+#' @param car x
+#' @param chr_prior x
+#'
+#' @importFrom dplyr mutate
+#' @importFrom tibble tibble
+#'
+#' @return list
+#' @export
+create_epiwave_greta_timeseries <- function (dates,
+                                             jurisdictions,
+                                             car,
+                                             chr_prior) { # greta::uniform(0, 1)
+
+  long_unique <- expand.grid(date = dates,
+                             jurisdiction = jurisdictions) |>
+    tibble::tibble()
+
+  # chr_prior <- greta::uniform(0, 1)
+  dim(chr_prior) <- nrow(long_unique)
+
+  if("epiwave_timeseries" %in% class(car)) {
+    car <- car$value
+  }
+
+  ihr_greta <- car * chr_prior
+
+  long_combined <- list(timeseries = long_unique,
+                        ihr = ihr_greta)
+
+  class(long_combined) <- c("epiwave_greta_timeseries",
+                            "epiwave_timeseries",
+                            class(long_combined))
+
+  long_combined
+}
 

@@ -5,10 +5,10 @@
 #' there is a 0.25 probability of the delay having a length between 2 and 3
 #' days.
 #'
-#' @param min_delay miniumum delay
-#' @param max_delay maxiumum delay
+#' @param min_delay_days miniumum delay
+#' @param max_delay_days maxiumum delay
 #' @param cdf_fun function for creating the cdf that defines the mass
-#' @param normalise whether the mass should be normalised
+#' @param normalise T/F whether the mass should be normalised
 #'
 #' @return epiwave_massfun object
 #' @export
