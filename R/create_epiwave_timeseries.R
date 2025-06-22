@@ -16,8 +16,8 @@
 #' @export
 #Assign superclass structure for timeseries data (i.e. distributions)
 create_epiwave_timeseries <- function (dates,
-                                           jurisdictions,
-                                           value) {
+                                       jurisdictions,
+                                       value) {
 
   long_unique <- expand.grid(date = dates,
                              jurisdiction = jurisdictions)
@@ -56,7 +56,7 @@ create_epiwave_massfun_timeseries <- function (dates,
                                                 value) {
 
   timeseries <- create_epiwave_timeseries(
-    dates = infection_days,
+    dates = dates,
     jurisdictions = jurisdictions,
     value = list(value))
 
@@ -80,7 +80,7 @@ create_epiwave_fixed_timeseries <- function (dates,
                                                  value) {
 
   timeseries <- create_epiwave_timeseries(
-    dates = infection_days,
+    dates = dates,
     jurisdictions = jurisdictions,
     value = value)
   #
