@@ -32,7 +32,7 @@ parametric_dist_to_distribution <- function (dist,
   # when distributional::cdf is applied to a sequence (of x) it returns a list
   cdf_fun <- function(x) distributional::cdf(dist, x)[[1]]
 
-  out <- create_epiwave_massfun(
+  out <- discretise_cdf(
     min_delay_days, max_delay_days,
     cdf_fun, normalise = TRUE)
   out

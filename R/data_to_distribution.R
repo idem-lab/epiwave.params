@@ -28,7 +28,7 @@ data_to_distribution <- function (data_date_1,
     max_delay_days <- ceiling(quantile(cdf_fun, max_delay_quantile))
   }
 
-  out <- create_epiwave_massfun(
+  out <- discretise_cdf(
     min_delay_days, max_delay_days,
     cdf_fun, normalise = TRUE)
   out
