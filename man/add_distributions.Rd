@@ -2,18 +2,21 @@
 % Please edit documentation in R/add_distributions.R
 \name{add_distributions}
 \alias{add_distributions}
-\title{Add together two epiwave_distribution_massfun objects}
+\title{Convolve two discrete distribution objects}
 \usage{
-add_distributions(delay1, delay2)
+add_distributions(dist1, dist2)
 }
 \arguments{
-\item{delay1}{first epiwave dist object to combine}
+\item{dist1}{a \code{discrete_pmf} or \code{discrete_curve} object}
 
-\item{delay2}{second epiwave dist object to combine}
+\item{dist2}{a \code{discrete_pmf} or \code{discrete_curve} object}
 }
 \value{
-epiwave_distribution_massfun
+a \code{discrete_pmf} or \code{discrete_curve} object representing the
+convolution of \code{dist1} and \code{dist2}
 }
 \description{
-Add together two epiwave_distribution_massfun objects
+Convolves two \code{discrete_pmf} or \code{discrete_curve} objects by
+discrete summation, returning an object of the same class as the inputs.
+Both inputs must be the same class.
 }
