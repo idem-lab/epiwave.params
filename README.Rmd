@@ -1,0 +1,70 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+```{r srr-tags, eval = FALSE, echo = FALSE}
+#' @srrstats {G1.0} Primary citations provided here to justify the approach
+#'   and application for infectious disease modelling. 
+#' @srrstats {G1.1} This package builds upon existing tools for working with 
+#'   probability distributions, namely `distributional` to create improved
+#'   tools for a particular set of epidemiological modellign needs. 
+```
+
+
+# epiwave.params 
+
+[![codecov](https://codecov.io/gh/acefa-hubs/EpiStrainDynamics/graph/badge.svg)](https://app.codecov.io/gh/acefa-hubs/EpiStrainDynamics)
+[![](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![Project Status: Active - The project has reached a stable, usable
+state and is being actively
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![R-CMD-check](https://github.com/acefa-hubs/EpiStrainDynamics/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/acefa-hubs/EpiStrainDynamics/actions/workflows/R-CMD-check.yaml)
+
+
+
+Delay distributions are manipulated via discrete
+#' summation rather than analytic methods. This is justified on two
+#' grounds. First, the modelled quantities (case counts, reports) are
+#' inherently discrete and observed at daily resolution, making
+#' discrete-time convolution the natural representation rather than
+#' a numerical approximation of a continuous operation (Cori et al.
+#' 2013; Gostic et al. 2020). Second, PMF masses are derived via
+#' CDF-differencing — computing mass(d) = CDF(d) - CDF(d-1) — which
+#' is the standard approach for discretising continuous delay
+#' distributions in infectious disease modelling (Ganyani et al.
+#' 2020), and preserves the distributional properties of the
+#' underlying continuous distribution within the truncation window.
+
+The goal of epiwave.params a set of general-purpose tools for converting distributional objects and empirical data into PMF representations suitable for discrete-time epidemiological modelling, including convolution.
+other tools to manipulate distributions exist but XX has a number of key improvements. 
+1. Discretise `distributional` objects to PMF's with quantile-based truncation (parametric_dist_to_distribution)
+2. Construct a PMF from empirical data (data_to_distribution)
+3. Convert `distributional` objects to a curve for use with serological or similar data (parametric_dist_to_curve)
+
+general-purpose toolbox for the kind of PMF manipulation pipeline 
+
+distcrete (RECON/reconhub) is the closest match to your parametric_dist_to_distribution. It implements a general approach for discretising continuous distributions onto a grid via CDF integration, returning an object with d, p, q, and r functions. CRAN It accepts distribution names as strings and parameters, which covers your parametric_dist_to_distribution use case reasonably well. It is not on CRAN anymore (last updated 2019, archived), is not rOpenSci reviewed, and importantly does not accept distributional objects as input — so your integration with the distributional ecosystem is a genuine differentiator.
+actuar::discretize covers the core CDF-differencing step with multiple methods (upper, lower, rounding, unbiased), returning a PMF vector from any CDF function. Rdrr.io It's a lower-level utility without the class structure or distributional integration you have.
+epiparameter (Epiverse-Trace, rOpenSci reviewed) is a library of epidemiological parameters with classes for handling delay distributions, including discretisation via a discretise = TRUE argument. Epiverse-trace However its focus is on curating and accessing known literature parameters, not on general-purpose transformation pipelines. It doesn't cover your data_to_distribution or parametric_dist_to_curve use cases.
+distr6 supports convolution of distributions analytically, implementing discrete PMF convolution as P(Z=z) = sum_x P(X=x)P(Y=z-x) RDocumentation, but uses R6 classes rather than the distributional/tidyverse-style S3 approach, and doesn't specifically target the epidemiological pipeline context.
+
+## Installation
+
+You can install the development version of epiwave.params from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("pak")
+pak::pak("idem-lab/epiwave.params")
+```
+

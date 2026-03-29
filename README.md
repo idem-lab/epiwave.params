@@ -40,7 +40,7 @@ combined <- add(delay_probs_from_dist,
 
 # adding more than one test <- add(combined, delay_probs_from_data)
 
-sero_curve_data <- read.csv('data_positivity_draft.csv')
+sero_curve_data <- read.csv('tests/test_workflows/data_positivity_draft.csv')
 
 
 out <- data_to_curve(sero_curve_data$days_since_onset,
