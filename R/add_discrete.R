@@ -11,7 +11,7 @@
 #'   convolution of `dist1` and `dist2`
 #'
 #' @export
-add_distributions <- function(dist1, dist2) {
+add_discrete <- function(dist1, dist2) {
   if (!inherits(dist1, c("discrete_pmf", "discrete_curve")) ||
       !inherits(dist2, c("discrete_pmf", "discrete_curve"))) {
     stop("`dist1` and `dist2` must be `discrete_pmf` or `discrete_curve` objects")
