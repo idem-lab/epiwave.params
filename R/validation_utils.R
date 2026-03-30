@@ -28,3 +28,28 @@ validate_series_list <- function(values, n, expected_class) {
   }
   invisible(values)
 }
+
+#' @noRd
+resolve_step_bounds <- function(x,
+                                min_step,
+                                max_step,
+                                min_step_quantile,
+                                max_step_quantile) {
+  if (!is.null(min_step) && min_step_quantile != 0.00) {
+    cli::cli_warn(
+      "`min_step_quantile` is ignored when `min_step` is supplied."
+    )
+  }
+  if (!is.null(max_step) && max_step_quantile != 0.99) {
+    cli::cli_warn(
+      "`max_step_quantile` is ignored when `max_step` is supplied."
+    )
+  }
+  if (is.null(min_step)) {
+    min_step <- floor(quantile(x, min_step_quantile))
+  }
+  if (is.null(max_step)) {
+    max_step <- ceiling(quantile(x, max_step_quantile))
+  }
+  list(min = min_step, max = max_step)
+}
