@@ -6,8 +6,8 @@
 #'   distribution.
 #'
 #'   When `pmf` is a single `discrete_pmf`, the same PMF is applied at every
-#'   timepoint. When it is a `discrete_pmf_series`, each timepoint uses its
-#'   corresponding PMF, enabling time-varying delay distributions.
+#'   timepoint and `n` must be supplied. When `pmf` is a `discrete_pmf_series`,
+#'   `n` is derived from the series index and does not need to be supplied.
 #'
 #'   Only `discrete_pmf` objects are accepted, not `discrete_curve` objects,
 #'   since this operation requires a normalised probability mass function.
@@ -19,10 +19,12 @@
 #'
 #' @param pmf a `discrete_pmf` or `discrete_pmf_series` object. A single
 #'   `discrete_pmf` is applied uniformly across all timepoints. A
-#'   `discrete_pmf_series` enables time-varying delays, where each element
-#'   corresponds to one timepoint and the series length must equal `n`.
-#' @param n a positive integer giving the number of timepoints, which
-#'   determines the dimensions of the output matrix.
+#'   `discrete_pmf_series` enables time-varying delays, with `n` derived
+#'   from the series index.
+#' @param n a positive integer giving the number of timepoints, determining
+#'   the dimensions of the output matrix. Required when `pmf` is a
+#'   `discrete_pmf`; inferred from timeseries index when `pmf` is a
+#'   `discrete_pmf_series`.
 #'
 #' @return an `n` by `n` numeric matrix. To apply the convolution, multiply
 #'   the matrix by a time series vector of length `n`, e.g.
@@ -33,11 +35,7 @@
 #' new_convolution_matrix(pmf, n = 10)
 #'
 #' @export
-new_convolution_matrix <- function(pmf, n) {
-
-  if (!is.numeric(n) || length(n) != 1 || n < 1 || n != as.integer(n)) {
-    cli::cli_abort("`n` must be a single positive integer.")
-  }
+new_convolution_matrix <- function(pmf, n = NULL) {
 
   if (!inherits(pmf, c("discrete_pmf", "discrete_pmf_series"))) {
     cli::cli_abort(
@@ -45,35 +43,67 @@ new_convolution_matrix <- function(pmf, n) {
     )
   }
 
+  n <- resolve_n(pmf, n)
+
   day_diff <- matrix(NA, n, n)
   day_diff <- row(day_diff) - col(day_diff)
 
-  if (inherits(pmf, "discrete_pmf")) {
-    evaluate_fun <- function(col_idx) {
-      evaluate_pmf(pmf, day_diff[, col_idx])
-    }
-  } else {
-    if (length(pmf$values) != n) {
-      cli::cli_abort(c(
-        "`pmf` and `n` must be compatible.",
-        "i" = "`pmf` has {length(pmf$values)} timepoints.",
-        "i" = "`n` is {n}."
-      ))
-    }
-    evaluate_fun <- function(col_idx) {
-      evaluate_pmf(pmf$values[[col_idx]], day_diff[, col_idx])
-    }
-  }
-
-  do.call(cbind, lapply(seq_len(n), evaluate_fun))
+  lookup_mass(pmf, day_diff)
 }
 
 #' @noRd
-evaluate_pmf <- function(lookup, day_diff_col) {
-  lookup <- as.data.frame(lookup)
-  day_diff_col[] <- lookup$mass[
-    match(day_diff_col, lookup$delays)
+resolve_n <- function(pmf, n) {
+  if (inherits(pmf, "discrete_pmf_series")) {
+    if (!is.null(n)) {
+      cli::cli_warn(
+        "`n` is ignored when `pmf` is a {.cls discrete_pmf_series}; derived from `pmf$index`."
+      )
+    }
+    # length(pmf$index) is guaranteed valid by new_discrete_series construction
+    return(length(pmf$index))
+  }
+  validate_n(n)
+}
+
+#' @noRd
+validate_n <- function(n) {
+  if (is.null(n)) {
+    cli::cli_abort("`n` must be supplied when `pmf` is a {.cls discrete_pmf}.")
+  }
+  if (!is.numeric(n) || length(n) != 1) {
+    cli::cli_abort("`n` must be a single numeric value.")
+  }
+  if (is.infinite(n) || is.nan(n)) {
+    cli::cli_abort("`n` must be a finite value.")
+  }
+  if (n < 1 || n != as.integer(n)) {
+    cli::cli_abort("`n` must be a positive integer.")
+  }
+  invisible(n)
+}
+
+#' @noRd
+lookup_mass <- function(pmf, day_diff, ...) {
+  UseMethod("lookup_mass")
+}
+
+#' @noRd
+lookup_mass.discrete_pmf <- function(pmf, day_diff, ...) {
+  pmf <- as.data.frame(pmf)
+  day_diff[] <- pmf$mass[
+    match(unlist(day_diff), pmf$step)
   ]
-  day_diff_col[is.na(day_diff_col)] <- 0
-  day_diff_col
+  day_diff[is.na(day_diff)] <- 0
+  day_diff
+}
+
+#' @noRd
+lookup_mass.discrete_pmf_series <- function(pmf, day_diff, ...) {
+  con_list <- lapply(
+    seq_len(ncol(day_diff)),
+    function(col_idx) {
+      lookup_mass(pmf$values[[col_idx]], day_diff[, col_idx])
+    }
+  )
+  do.call(cbind, con_list)
 }
