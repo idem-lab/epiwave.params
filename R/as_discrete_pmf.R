@@ -8,19 +8,26 @@
 #'   from the CDF. When `x` and `y` are date or numeric vectors, the PMF is
 #'   derived empirically from the observed delays between paired dates.
 #'
+#'   The truncation bounds are set either explicitly via `min_step` and
+#'   `max_step`, or derived from quantiles of the distribution via
+#'   `min_step_quantile` and `max_step_quantile`. If both are supplied,
+#'   the explicit bounds take precedence and a warning is issued.
+#'
 #' @param x either a `distributional` object, or a date/numeric vector of
 #'   earlier event times (e.g. symptom onset) when used with `y`.
 #' @param y a date/numeric vector of later event times (e.g. notification),
 #'   paired with `x`. Only used when `x` is a date/numeric vector. Defaults
 #'   to `NULL`.
-#' @param min_delay_days optional integer specifying the minimum delay in days.
-#'   If `NULL`, derived from `min_delay_quantile`.
-#' @param max_delay_days optional integer specifying the maximum delay in days.
-#'   If `NULL`, derived from `max_delay_quantile`.
-#' @param min_delay_quantile quantile used to derive the minimum delay if
-#'   `min_delay_days` is not supplied. Defaults to 0.
-#' @param max_delay_quantile quantile used to derive the maximum delay if
-#'   `max_delay_days` is not supplied. Defaults to 0.99.
+#' @param min_step optional single non-negative integer specifying the minimum
+#'   step value. If `NULL`, derived from `min_step_quantile`. If supplied,
+#'   `min_step_quantile` is ignored.
+#' @param max_step optional single non-negative integer specifying the maximum
+#'   step value. If `NULL`, derived from `max_step_quantile`. If supplied,
+#'   `max_step_quantile` is ignored.
+#' @param min_step_quantile quantile used to derive the minimum step if
+#'   `min_step` is not supplied. Defaults to 0.
+#' @param max_step_quantile quantile used to derive the maximum step if
+#'   `max_step` is not supplied. Defaults to 0.99.
 #'
 #' @return a `discrete_pmf` object
 #'
@@ -30,16 +37,16 @@
 #' @export
 as_discrete_pmf <- function(x,
                             y = NULL,
-                            min_delay_days = NULL,
-                            max_delay_days = NULL,
-                            min_delay_quantile = 0.00,
-                            max_delay_quantile = 0.99) {
+                            min_step = NULL,
+                            max_step = NULL,
+                            min_step_quantile = 0.00,
+                            max_step_quantile = 0.99) {
 
   if (inherits(x, "distribution")) {
     cdf_fun <- function(q) distributional::cdf(x, q)[[1]]
-    bounds <- resolve_delay_bounds(
-      x, min_delay_days, max_delay_days,
-      min_delay_quantile, max_delay_quantile
+    bounds <- resolve_step_bounds(
+      x, min_step, max_step,
+      min_step_quantile, max_step_quantile
     )
 
   } else if (inherits(x, "Date") || is.numeric(x)) {
@@ -49,9 +56,9 @@ as_discrete_pmf <- function(x,
     }
     day_diff <- y - x
     cdf_fun <- stats::ecdf(day_diff)
-    bounds <- resolve_delay_bounds(
-      cdf_fun, min_delay_days, max_delay_days,
-      min_delay_quantile, max_delay_quantile
+    bounds <- resolve_step_bounds(
+      cdf_fun, min_step, max_step,
+      min_step_quantile, max_step_quantile
     )
 
   } else {
