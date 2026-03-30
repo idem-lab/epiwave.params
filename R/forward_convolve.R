@@ -24,7 +24,7 @@
 #' @return an `n` by `n` numeric matrix for forward convolution
 #'
 #' @export
-get_convolution_matrix <- function(delay_distribution, n) {
+forward_convolve <- function(delay_distribution, n) {
 
   if (!is.numeric(n) || length(n) != 1 || n < 1 || n != as.integer(n)) {
     cli::cli_abort("`n` must be a single positive integer.")
