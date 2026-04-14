@@ -2,24 +2,38 @@
 % Please edit documentation in R/as_discrete_pmf.R
 \name{as_discrete_pmf}
 \alias{as_discrete_pmf}
+\alias{as_discrete_pmf.distribution}
+\alias{as_discrete_pmf.numeric}
+\alias{as_discrete_pmf.default}
 \title{Convert a distribution or empirical data to a discrete PMF}
 \usage{
-as_discrete_pmf(
+as_discrete_pmf(x, ...)
+
+\method{as_discrete_pmf}{distribution}(
   x,
-  y = NULL,
   min_step = NULL,
   max_step = NULL,
   min_step_quantile = 0,
-  max_step_quantile = 0.99
+  max_step_quantile = 0.99,
+  ...
 )
+
+\method{as_discrete_pmf}{numeric}(
+  x,
+  min_step = NULL,
+  max_step = NULL,
+  min_step_quantile = 0,
+  max_step_quantile = 0.99,
+  ...
+)
+
+\method{as_discrete_pmf}{default}(x, ...)
 }
 \arguments{
-\item{x}{either a \code{distributional} object, or a date/numeric vector of
-earlier event times (e.g. symptom onset) when used with \code{y}.}
+\item{x}{either a \code{distributional} object, or a numeric vector of observed
+values (e.g. computed delays) from which an empirical PMF is derived.}
 
-\item{y}{a date/numeric vector of later event times (e.g. notification),
-paired with \code{x}. Only used when \code{x} is a date/numeric vector. Defaults
-to \code{NULL}.}
+\item{...}{additional arguments passed to methods}
 
 \item{min_step}{optional single non-negative integer specifying the minimum
 step value. If \code{NULL}, derived from \code{min_step_quantile}. If supplied,
@@ -39,13 +53,13 @@ step value. If \code{NULL}, derived from \code{max_step_quantile}. If supplied,
 a \code{discrete_pmf} object
 }
 \description{
-Converts either a \code{distributional} object or a pair of
-date/numeric vectors to a \code{discrete_pmf} object by CDF-differencing
-with quantile-based truncation and normalisation.
+Converts either a \code{distributional} object or a numeric vector
+of observed values to a \code{discrete_pmf} object by CDF-differencing with
+quantile-based truncation and normalisation.
 
 When \code{x} is a \code{distributional} object, the PMF is derived analytically
-from the CDF. When \code{x} and \code{y} are date or numeric vectors, the PMF is
-derived empirically from the observed delays between paired dates.
+from the CDF. When \code{x} is a numeric vector, the PMF is derived
+empirically from the observed values using an empirical CDF.
 
 The truncation bounds are set either explicitly via \code{min_step} and
 \code{max_step}, or derived from quantiles of the distribution via
