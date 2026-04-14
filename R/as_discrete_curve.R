@@ -1,17 +1,17 @@
-#' Convert a distributional object or empirical data to a discrete curve
+#' Convert a distributional object or empirical data to a discrete weights
 #'
 #' @description Converts either a `distributional` object or paired
-#'   step/value vectors to a `discrete_curve` object.
+#'   step/value vectors to a `discrete_weights` object.
 #'
-#'   When `x` is a `distributional` object, the curve is derived analytically
+#'   When `x` is a `distributional` object, the weights are derived analytically
 #'   from the CDF via CDF-differencing with quantile-based truncation. The
 #'   resulting values are not normalised and do not sum to 1.
 #'
-#'   When `x` and `y` are numeric vectors, the curve is constructed directly
-#'   from the supplied values. This is useful when empirical curves are
-#'   available from external sources, for example seroprevalence curves
+#'   When `x` and `y` are numeric vectors, the weights are constructed directly
+#'   from the supplied values. This is useful when empirical weights are
+#'   available from external sources, for example seroprevalence weights
 #'   (probability of testing positive by step since infection) or wastewater
-#'   shedding curves (viral shedding as a proportion of peak by step since
+#'   shedding weights (viral shedding as a proportion of peak by step since
 #'   infection).
 #'
 #'   The truncation bounds are set either explicitly via `min_step` and
@@ -39,12 +39,14 @@
 #'   `max_step` is not supplied. Defaults to 0.99. Only used when `x` is a
 #'   `distributional` object.
 #'
-#' @return a `discrete_curve` object
+#' @return `discrete_weights` object: a data frame with columns `step` and
+#'   `weight` (a non-negative value proportional to the contribution at each
+#'   step).
 #'
 #' @importFrom distributional cdf
 #'
 #' @export
-as_discrete_curve <- function(x,
+as_discrete_weights <- function(x,
                               y = NULL,
                               min_step = NULL,
                               max_step = NULL,
@@ -66,9 +68,9 @@ as_discrete_curve <- function(x,
         "`y` must be a numeric vector when `x` is a numeric vector."
       )
     }
-    curve_df <- data.frame(step = x, mass = y)
-    class(curve_df) <- c("discrete_curve", class(curve_df))
-    curve_df
+    weights_df <- data.frame(step = x, mass = y)
+    class(weights_df) <- c("discrete_weights", class(weights_df))
+    weights_df
 
   } else {
     cli::cli_abort(

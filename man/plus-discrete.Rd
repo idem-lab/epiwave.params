@@ -3,25 +3,25 @@
 \name{plus-discrete}
 \alias{plus-discrete}
 \alias{+.discrete_pmf}
-\alias{+.discrete_curve}
+\alias{+.discrete_weights}
 \title{Add two discrete objects using the + operator}
 \usage{
 \method{+}{discrete_pmf}(e1, e2)
 
-\method{+}{discrete_curve}(e1, e2)
+\method{+}{discrete_weights}(e1, e2)
 }
 \arguments{
-\item{e1}{a \code{discrete_pmf} or \code{discrete_curve} object}
+\item{e1}{a \code{discrete_pmf} or \code{discrete_weights} object}
 
-\item{e2}{a \code{discrete_pmf} or \code{discrete_curve} object of the same class
+\item{e2}{a \code{discrete_pmf} or \code{discrete_weights} object of the same class
 as \code{e1}}
 }
 \value{
-a \code{discrete_pmf} or \code{discrete_curve} object representing the
+a \code{discrete_pmf} or \code{discrete_weights} object representing the
 convolution of \code{e1} and \code{e2}
 }
 \description{
-Convolves two \code{discrete_pmf} or \code{discrete_curve} objects using
+Convolves two \code{discrete_pmf} or \code{discrete_weights} objects using
 the \code{+} operator. Both objects must be the same class. This is equivalent
 to calling \code{add_discrete(discrete1, discrete2)}.
 

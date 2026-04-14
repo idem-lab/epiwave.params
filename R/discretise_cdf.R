@@ -1,4 +1,4 @@
-#' Discretise a CDF into a discrete PMF or curve
+#' Discretise a CDF into a discrete PMF or weight fun n
 #'
 #' @description Constructs a two-column data frame with `step` denoting the
 #'   discrete index and `mass` denoting the probability of the value falling
@@ -9,7 +9,7 @@
 #'   When `normalise = TRUE`, masses are divided by their sum, returning a
 #'   `discrete_pmf` that sums to 1. When `normalise = FALSE`, masses are
 #'   returned as CDF differences without normalisation, returning a
-#'   `discrete_curve`.
+#'   `discrete_weights`.
 #'
 #' @param min_step a single non-negative integer giving the minimum step value
 #' @param max_step a single non-negative integer giving the maximum step value,
@@ -18,7 +18,7 @@
 #' @param normalise logical; if `TRUE` masses are normalised to sum to 1.
 #'   Defaults to `TRUE`.
 #'
-#' @return a `discrete_pmf` if `normalise = TRUE`, or a `discrete_curve` if
+#' @return a `discrete_pmf` if `normalise = TRUE`, or a `discrete_weights` if
 #'   `normalise = FALSE`
 #'
 #' @noRd
@@ -47,8 +47,7 @@ discretise_cdf <- function(min_step,
   }
 
   delay_massfun <- data.frame(
-    step = seq(min_step, max_step)
-  ) |>
+    step = seq(min_step, max_step)) |>
     dplyr::mutate(
       upper = cdf_fun(step),
       lower = cdf_fun(step - 1),
@@ -66,7 +65,7 @@ discretise_cdf <- function(min_step,
   if (normalise) {
     class(delay_massfun) <- c("discrete_pmf", class(delay_massfun))
   } else {
-    class(delay_massfun) <- c("discrete_curve", class(delay_massfun))
+    class(delay_massfun) <- c("discrete_weights", class(delay_massfun))
   }
 
   delay_massfun
@@ -112,16 +111,16 @@ plot.discrete_pmf <- function(x, y, ...) {
     ggplot2::theme_minimal()
 }
 
-#' Plot a discrete_curve object
+#' Plot a discrete_weights object
 #'
-#' @param x a `discrete_curve` object
+#' @param x a `discrete_weights` object
 #' @param y unused, present for compatibility with the generic `plot` method
 #' @param ... additional arguments passed to `ggplot2::geom_line()`
 #'
 #' @return a `ggplot` object
 #'
 #' @export
-plot.discrete_curve <- function(x, y, ...) {
+plot.discrete_weights <- function(x, y, ...) {
   ggplot2::ggplot(x, ggplot2::aes(x = step, y = mass)) +
     ggplot2::geom_line(linewidth = 0.8, ...) +
     ggplot2::labs(

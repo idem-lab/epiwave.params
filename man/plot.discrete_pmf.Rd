@@ -2,20 +2,20 @@
 % Please edit documentation in R/discretise_cdf.R
 \name{plot.discrete_pmf}
 \alias{plot.discrete_pmf}
-\title{Default plot function for discrete_pmf object}
+\title{Plot a discrete_pmf object}
 \usage{
 \method{plot}{discrete_pmf}(x, y, ...)
 }
 \arguments{
-\item{x}{x value}
+\item{x}{a \code{discrete_pmf} object}
 
-\item{y}{y value}
+\item{y}{unused, present for compatibility with the generic \code{plot} method}
 
-\item{...}{additional arguments}
+\item{...}{additional arguments passed to \code{ggplot2::geom_col()}}
 }
 \value{
-plot
+a \code{ggplot} object
 }
 \description{
-Default plot function for discrete_pmf object
+Plot a discrete_pmf object
 }

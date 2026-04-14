@@ -9,7 +9,7 @@
 #'   timepoint and `n` must be supplied. When `pmf` is a `discrete_pmf_series`,
 #'   `n` is derived from the series index and does not need to be supplied.
 #'
-#'   Only `discrete_pmf` objects are accepted, not `discrete_curve` objects,
+#'   Only `discrete_pmf` objects are accepted, not `discrete_weights` objects,
 #'   since this operation requires a normalised probability mass function.
 #'
 #' @srrstats {PD3.5} Discrete summation is used following Cori et al. (2013,

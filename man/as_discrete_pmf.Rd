@@ -7,10 +7,10 @@
 as_discrete_pmf(
   x,
   y = NULL,
-  min_delay_days = NULL,
-  max_delay_days = NULL,
-  min_delay_quantile = 0,
-  max_delay_quantile = 0.99
+  min_step = NULL,
+  max_step = NULL,
+  min_step_quantile = 0,
+  max_step_quantile = 0.99
 )
 }
 \arguments{
@@ -21,17 +21,19 @@ earlier event times (e.g. symptom onset) when used with \code{y}.}
 paired with \code{x}. Only used when \code{x} is a date/numeric vector. Defaults
 to \code{NULL}.}
 
-\item{min_delay_days}{optional integer specifying the minimum delay in days.
-If \code{NULL}, derived from \code{min_delay_quantile}.}
+\item{min_step}{optional single non-negative integer specifying the minimum
+step value. If \code{NULL}, derived from \code{min_step_quantile}. If supplied,
+\code{min_step_quantile} is ignored.}
 
-\item{max_delay_days}{optional integer specifying the maximum delay in days.
-If \code{NULL}, derived from \code{max_delay_quantile}.}
+\item{max_step}{optional single non-negative integer specifying the maximum
+step value. If \code{NULL}, derived from \code{max_step_quantile}. If supplied,
+\code{max_step_quantile} is ignored.}
 
-\item{min_delay_quantile}{quantile used to derive the minimum delay if
-\code{min_delay_days} is not supplied. Defaults to 0.}
+\item{min_step_quantile}{quantile used to derive the minimum step if
+\code{min_step} is not supplied. Defaults to 0.}
 
-\item{max_delay_quantile}{quantile used to derive the maximum delay if
-\code{max_delay_days} is not supplied. Defaults to 0.99.}
+\item{max_step_quantile}{quantile used to derive the maximum step if
+\code{max_step} is not supplied. Defaults to 0.99.}
 }
 \value{
 a \code{discrete_pmf} object
@@ -44,4 +46,9 @@ with quantile-based truncation and normalisation.
 When \code{x} is a \code{distributional} object, the PMF is derived analytically
 from the CDF. When \code{x} and \code{y} are date or numeric vectors, the PMF is
 derived empirically from the observed delays between paired dates.
+
+The truncation bounds are set either explicitly via \code{min_step} and
+\code{max_step}, or derived from quantiles of the distribution via
+\code{min_step_quantile} and \code{max_step_quantile}. If both are supplied,
+the explicit bounds take precedence and a warning is issued.
 }
