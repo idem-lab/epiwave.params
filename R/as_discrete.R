@@ -348,10 +348,141 @@ as_discrete_weights.numeric <- function(x,
   df
 }
 
+#' @rdname as_discrete_pmf
+#' @export
+as_discrete_pmf.difftime <- function(x,
+                                     min_step = NULL,
+                                     max_step = NULL,
+                                     min_step_quantile = 0.00,
+                                     max_step_quantile = 0.99,
+                                     ...) {
+
+  unit <- attr(x, "units")
+  if (is.null(unit)) {
+    cli::cli_abort("`difftime` object has no units attribute.")
+  }
+
+  cli::cli_inform(c(
+    "i" = "Converting {.cls difftime} to numeric using unit: {.val {unit}}."
+  ))
+
+  x_num <- as.numeric(x)
+
+  as_discrete_pmf.numeric(
+    x_num,
+    min_step = min_step,
+    max_step = max_step,
+    min_step_quantile = min_step_quantile,
+    max_step_quantile = max_step_quantile,
+    ...
+  )
+}
+
 #' @rdname as_discrete_weights
 #' @export
 as_discrete_weights.default <- function(x, ...) {
   cli::cli_abort(
     "`x` must be a {.cls distribution} object or a numeric vector."
   )
+}
+
+#' Discretise a CDF into a discrete PMF or weight function
+#'
+#' @description
+#' Constructs a two-column data frame with `step` denoting the discrete index
+#' and `mass` denoting the probability of the value falling between that step
+#' and the one before. For example, if `step = 3` and `mass = 0.25`, there is
+#' a 0.25 probability of the value falling between 2 and 3 steps.
+#'
+#' When `normalise = TRUE`, masses are divided by their sum, returning a
+#' `discrete_pmf` that sums to 1. When `normalise = FALSE`, masses are returned
+#' as CDF differences without normalisation, returning a `discrete_weights`.
+#'
+#' @param min_step A single non-negative integer giving the minimum step value.
+#' @param max_step A single non-negative integer giving the maximum step value;
+#'   must be greater than `min_step`.
+#' @param cdf_fun A function returning CDF values for given step values.
+#' @param normalise Logical; if `TRUE`, masses are normalised to sum to 1.
+#'   Defaults to `TRUE`.
+#'
+#' @return
+#' A `discrete_pmf` if `normalise = TRUE`, or a `discrete_weights` if
+#' `normalise = FALSE`.
+#'
+#' @noRd
+discretise_cdf <- function(min_step,
+                           max_step,
+                           cdf_fun,
+                           normalise = TRUE) {
+
+  min_step <- validate_bound(min_step, "min_step")
+  max_step <- validate_bound(max_step, "max_step")
+
+  if (min_step >= max_step) {
+    cli::cli_abort(c(
+      "`min_step` must be less than `max_step`.",
+      "i" = "`min_step` is {min_step}.",
+      "i" = "`max_step` is {max_step}."
+    ))
+  }
+
+  if (!is.function(cdf_fun)) {
+    cli::cli_abort("`cdf_fun` must be a function.")
+  }
+
+  if (!is.logical(normalise) || length(normalise) != 1) {
+    cli::cli_abort("`normalise` must be a single logical value.")
+  }
+
+  delay_massfun <-
+    data.frame(step = seq(min_step, max_step)) |>
+    dplyr::mutate(
+      upper = cdf_fun(step),
+      lower = cdf_fun(step - 1),
+      mass  = upper - lower
+    )
+
+  if (normalise) {
+    delay_massfun <-
+      delay_massfun |>
+      dplyr::mutate(mass = mass / sum(mass))
+  }
+
+  delay_massfun <-
+    delay_massfun |>
+    dplyr::select(step, mass)
+
+  if (normalise) {
+    class(delay_massfun) <- c("discrete_pmf", class(delay_massfun))
+  } else {
+    class(delay_massfun) <- c("discrete_weights", class(delay_massfun))
+  }
+
+  delay_massfun
+}
+
+#' @noRd
+validate_bound <- function(x, name) {
+
+  if (!is.numeric(x) || length(x) != 1) {
+    cli::cli_abort("{.arg {name}} must be a single numeric value.")
+  }
+
+  if (is.infinite(x) || is.nan(x)) {
+    cli::cli_abort("{.arg {name}} must be a finite value.")
+  }
+
+  if (x < 0) {
+    cli::cli_abort("{.arg {name}} must be non-negative.")
+  }
+
+  if (x != as.integer(x)) {
+    cli::cli_warn(c(
+      "{.arg {name}} is not an integer.",
+      "i" = "Coercing {x} to {as.integer(x)}."
+    ))
+    x <- as.integer(x)
+  }
+
+  invisible(x)
 }
