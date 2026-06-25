@@ -50,6 +50,7 @@ as_discrete_pmf <- function(x, ...) {
 
 #' @rdname as_discrete_pmf
 #' @importFrom distributional cdf
+#' @importFrom dplyr mutate select
 #' @importFrom stats quantile
 #' @export
 as_discrete_pmf.distribution <- function(x,
@@ -81,6 +82,11 @@ as_discrete_pmf.numeric <- function(x,
                                     min_step_quantile = 0.00,
                                     max_step_quantile = 0.99,
                                     ...) {
+
+  if (length(x) == 0L) {
+    cli::cli_abort("`x` must contain at least one value.")
+  }
+
   cdf_fun <- stats::ecdf(x)
   bounds <- resolve_step_bounds(
     cdf_fun, min_step, max_step,
@@ -208,6 +214,10 @@ as_discrete_weights.distribution <- function(x,
 as_discrete_weights.numeric <- function(x,
                                         y = NULL,
                                         ...) {
+  if (length(x) == 0L) {
+    cli::cli_abort("`x` must contain at least one value.")
+  }
+
   if (is.null(y)) {
     cli::cli_abort(
       "`y` must be supplied when `x` is a numeric vector."
@@ -322,6 +332,11 @@ as_discrete_weights.distribution <- function(x,
 as_discrete_weights.numeric <- function(x,
                                         y = NULL,
                                         ...) {
+
+  if (length(x) == 0L) {
+    cli::cli_abort("`x` must contain at least one value.")
+  }
+
   if (is.null(y)) {
     cli::cli_abort(
       "`y` must be supplied when `x` is a numeric vector."
