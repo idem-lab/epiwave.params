@@ -2,19 +2,18 @@
 #'
 #' @description Convolves two `discrete_pmf` or `discrete_weights` objects by
 #'   discrete summation, returning an object of the same class as the inputs.
-#'   Both inputs must be the same class.
-#'
-#'   For `discrete_pmf` objects, the result is a new `discrete_pmf`
-#'   representing the distribution of the sum of two independent delays.
-#'   For `discrete_weights` objects, the result is a new `discrete_weights`
-#'   representing the convolution of the two weights.
+#'   Both inputs must be the same class. This function assumes input objects
+#'   satisfy the invariants of their class (e.g., probability mass functions
+#'   are normalised). These invariants are enforced during construction.
 #'
 #' @param discrete1 a `discrete_pmf` or `discrete_weights` object
 #' @param discrete2 a `discrete_pmf` or `discrete_weights` object of the same
 #'   class as `discrete1`
 #'
-#' @return a `discrete_pmf` or `discrete_weights` object representing the
-#'   convolution of `discrete1` and `discrete2`
+#' @return For `discrete_pmf` objects, the result is a new `discrete_pmf`
+#'   representing the distribution of the sum of two independent delays.
+#'   For `discrete_weights` objects, the result is a new `discrete_weights`
+#'   representing the convolution of the two weights.
 #'
 #' @importFrom dplyr rename left_join mutate group_by summarise
 #' @importFrom tidyr expand_grid
@@ -34,29 +33,51 @@ add_discrete <- function(discrete1, discrete2) {
     )
   }
 
-  if (class(discrete1)[1] != class(discrete2)[1]) {
+  if (nrow(discrete1) == 0 || nrow(discrete2) == 0) {
+    cli::cli_abort("Cannot convolve empty discrete objects.")
+  }
+
+  cls <- class(discrete1)[1]
+
+  if (cls != class(discrete2)[1]) {
     cli::cli_abort(c(
       "`discrete1` and `discrete2` must be the same class.",
-      "i" = "`discrete1` is {.cls {class(discrete1)[1]}}.",
+      "i" = "`discrete1` is {.cls {cls}}.",
       "i" = "`discrete2` is {.cls {class(discrete2)[1]}}."
     ))
   }
 
-  out_class <- class(discrete1)[1]
+  d1 <- dplyr::mutate(
+    discrete1,
+    value1 = .values(discrete1)
+  )
 
-  discrete1 <- dplyr::rename(discrete1, step1 = step, massfun1 = mass)
-  discrete2 <- dplyr::rename(discrete2, step2 = step, massfun2 = mass)
+  d2 <- dplyr::mutate(
+    discrete2,
+    value2 = .values(discrete2)
+  )
 
   p <- tidyr::expand_grid(
-    step1 = discrete1$step1,
-    step2 = discrete2$step2) |>
-    dplyr::left_join(discrete1, by = "step1") |>
-    dplyr::left_join(discrete2, by = "step2") |>
-    dplyr::mutate(step = .data$step1 + .data$step2) |>
+    step1 = d1$step,
+    step2 = d2$step) |>
+    dplyr::left_join(d1, by = c("step1" = "step")) |>
+    dplyr::left_join(d2, by = c("step2" = "step")) |>
+    dplyr::mutate(
+      step = .data$step1 + .data$step2,
+      value = .data$value1 * .data$value2) |>
     dplyr::group_by(.data$step) |>
-    dplyr::summarise(mass = sum(.data$massfun1 * .data$massfun2))
+    dplyr::summarise(value = sum(.data$value), .groups = "drop")
 
-  class(p) <- c(out_class, class(p))
+  # restore semantic column name
+  if (cls == "discrete_pmf") {
+    p$prob <- p$value
+    p$value <- NULL
+  } else {
+    p$weight <- p$value
+    p$value <- NULL
+  }
+
+  class(p) <- c(cls, "data.frame")
   p
 }
 
@@ -73,8 +94,10 @@ add_discrete <- function(discrete1, discrete2) {
 #' @param e2 a `discrete_pmf` or `discrete_weights` object of the same class
 #'   as `e1`
 #'
-#' @return a `discrete_pmf` or `discrete_weights` object representing the
-#'   convolution of `e1` and `e2`
+#' @return For `discrete_pmf` objects, the result is a new `discrete_pmf`
+#'   representing the distribution of the sum of two independent delays.
+#'   For `discrete_weights` objects, the result is a new `discrete_weights`
+#'   representing the convolution of the two weights.
 #'
 #' @name plus-discrete
 #' @export
