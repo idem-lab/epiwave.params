@@ -1,5 +1,5 @@
 Package: epiwave.params
-Title: Constructor functions for epidemiological parameter distributions
+Title: Tools for discretising, manipulating, and combining delay distributions and weight curves
 Version: 0.1.0
 Authors@R: c(
     person("Saras", "Windecker", role = c("aut", "cre"),
@@ -11,25 +11,25 @@ Authors@R: c(
            comment = c(ORCID = "0000-0001-8916-5570")),
     person("Kate", "Senior", role = "ctb",
            comment = c(ORCID = "0000-0003-1123-1472")))
-Description: This package exists as a toolbox to prepare epidemiological and 
-    biological parameters for modelling with epiwave for modelling infections 
-    as a gaussian process over time. 
+Description: This package provides tools for discretising, manipulating, and combining delay distributions and weight curves.
 License: Apache License (>= 2)
 Encoding: UTF-8
 Roxygen: list (markdown = TRUE, roclets = c ("namespace", "rd", "srr::srr_stats_roclet"))
 RoxygenNote: 7.3.3
 URL: https://github.com/idem-lab/epiwave.params
 BugReports: https://github.com/idem-lab/epiwave.params/issues
-Suggests: 
-    R.rsp,
-    testthat (>= 3.0.0)
+Suggests:
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    tsibble
 Imports:
+    cli,
     distributional,
     dplyr,
-    graphics,
-    magrittr,
+    ggplot2,
     stats,
     tibble,
     tidyr
-VignetteBuilder: R.rsp
+VignetteBuilder: knitr
 Config/testthat/edition: 3
