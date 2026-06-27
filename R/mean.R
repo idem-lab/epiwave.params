@@ -18,3 +18,21 @@
 mean.discrete_pmf <- function(x, ...) {
   sum(x$step * .values(x))
 }
+
+#' Compute the mean of each PMF in a discrete_pmf_series
+#'
+#' @description Computes the expected value of each `discrete_pmf` in a
+#'   `discrete_pmf_series`, returning a numeric vector of means aligned to
+#'   the series index.
+#'
+#' @param x a `discrete_pmf_series` object
+#' @param ... unused, present for compatibility with the generic
+#'
+#' @return a named numeric vector of expected step values, named by the
+#'   series index
+#'
+#' @export
+mean.discrete_pmf_series <- function(x, ...) {
+  means <- vapply(x$values, mean, numeric(1))
+  stats::setNames(means, as.character(x$index))
+}
