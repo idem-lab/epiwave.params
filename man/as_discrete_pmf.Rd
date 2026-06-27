@@ -6,6 +6,7 @@
 \alias{as_discrete_pmf.numeric}
 \alias{as_discrete_pmf.default}
 \alias{as_discrete_pmf.discrete_weights}
+\alias{as_discrete_pmf.difftime}
 \title{Convert a distribution, empirical data, or discrete weights to a discrete PMF}
 \usage{
 as_discrete_pmf(x, ...)
@@ -31,6 +32,15 @@ as_discrete_pmf(x, ...)
 \method{as_discrete_pmf}{default}(x, ...)
 
 \method{as_discrete_pmf}{discrete_weights}(x, ...)
+
+\method{as_discrete_pmf}{difftime}(
+  x,
+  min_step = NULL,
+  max_step = NULL,
+  min_step_quantile = 0,
+  max_step_quantile = 0.99,
+  ...
+)
 }
 \arguments{
 \item{x}{a \code{distributional} object, a numeric vector of observed values

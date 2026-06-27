@@ -13,16 +13,15 @@ add_discrete(discrete1, discrete2)
 class as \code{discrete1}}
 }
 \value{
-a \code{discrete_pmf} or \code{discrete_weights} object representing the
-convolution of \code{discrete1} and \code{discrete2}
-}
-\description{
-Convolves two \code{discrete_pmf} or \code{discrete_weights} objects by
-discrete summation, returning an object of the same class as the inputs.
-Both inputs must be the same class.
-
 For \code{discrete_pmf} objects, the result is a new \code{discrete_pmf}
 representing the distribution of the sum of two independent delays.
 For \code{discrete_weights} objects, the result is a new \code{discrete_weights}
 representing the convolution of the two weights.
+}
+\description{
+Convolves two \code{discrete_pmf} or \code{discrete_weights} objects by
+discrete summation, returning an object of the same class as the inputs.
+Both inputs must be the same class. This function assumes input objects
+satisfy the invariants of their class (e.g., probability mass functions
+are normalised). These invariants are enforced during construction.
 }

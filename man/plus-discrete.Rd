@@ -17,8 +17,10 @@
 as \code{e1}}
 }
 \value{
-a \code{discrete_pmf} or \code{discrete_weights} object representing the
-convolution of \code{e1} and \code{e2}
+For \code{discrete_pmf} objects, the result is a new \code{discrete_pmf}
+representing the distribution of the sum of two independent delays.
+For \code{discrete_weights} objects, the result is a new \code{discrete_weights}
+representing the convolution of the two weights.
 }
 \description{
 Convolves two \code{discrete_pmf} or \code{discrete_weights} objects using
