@@ -6,19 +6,15 @@
 #'
 #' @param x A discrete_pmf or discrete_weights object
 #' @noRd
-#' @export
 .values <- function(x) UseMethod(".values")
 
 #' @noRd
-#' @export
 .values.discrete_pmf <- function(x) x$prob
 
 #' @noRd
-#' @export
 .values.discrete_weights <- function(x) x$weight
 
 #' @noRd
-#' @export
 .values.default <- function(x) {
   cli::cli_abort(
     c(
