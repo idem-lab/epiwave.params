@@ -38,14 +38,16 @@ new_discrete_series <- function(values, index) {
     }
     if (!classes[1] %in% c("discrete_pmf", "discrete_weights")) {
       cli::cli_abort(
-        "All elements of `values` must be {.cls discrete_pmf} or {.cls discrete_weights} objects."
+        "All elements of `values` must be {.cls discrete_pmf} or
+        {.cls discrete_weights} objects."
       )
     }
     out_class <- paste0(classes[1], "_series")
     validate_series_list(values, n, classes[1])
   } else {
     cli::cli_abort(
-      "`values` must be a {.cls discrete_pmf}, {.cls discrete_weights}, or a list of either."
+      "`values` must be a {.cls discrete_pmf}, {.cls discrete_weights},
+      or a list of either."
     )
   }
 
