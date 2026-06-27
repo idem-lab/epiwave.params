@@ -1,0 +1,249 @@
+---
+title: "Working with discrete delay distributions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Working with discrete delay distributions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Motivation and scope
+
+Discrete delay distributions arise frequently in infectious disease modelling.
+Common examples include the generation interval, incubation period,
+infection-to-reporting delays, and viral shedding curves.
+These quantities are often specified as continuous distributions,
+but are implemented in discrete-time models via discretisation.
+
+This package provides tools for **constructing, representing, and manipulating
+discrete delay distributions and weight curves** in a principled way.
+This package helps construct discrete objects, and once they exist, provides 
+tools for: combining them, transforming them, aligning them through time,
+and integrating them into downstream epidemic models.
+
+The design separates functionality into three conceptual layers:
+
+- **Core layer**: discrete probability mass functions (PMFs) and non-normalised weights
+- **Series layer**: time-indexed collections of discrete objects
+- **Applied layer**: utilities for using these objects in epidemic models
+
+The sections below follow a task-oriented workflow built on top of this structure.
+
+## Core layer: discrete objects
+
+The core abstractions in this package are two closely related object types:
+
+- `discrete_pmf`: a normalised discrete probability mass function, used for 
+example for delay distributions
+- `discrete_weights`: a non-negative, non-normalised weight curve
+
+Both are defined on a discrete support indexed by `step`.
+
+### Construction
+
+Discrete objects can be constructed in two main ways:
+from continuous distributions, or from empirical / externally supplied curves.
+
+#### From continuous distributions
+
+When starting from a continuous distribution, discretisation is performed
+via differencing the cumulative distribution function (CDF), with optional
+truncation.
+
+```{r}
+library(distributional)
+
+pmf <- as_discrete_pmf(
+  distributional::dist_gamma(shape = 3, rate = 0.5)
+)
+
+pmf
+```
+
+The resulting object is a `discrete_pmf`, guaranteed to be normalised
+and suitable for use as a probability distribution.
+
+#### From empirical curves
+
+Empirical or externally derived curves can also be used directly.
+These are represented as `discrete_weights`, which do not assume
+normalisation or probabilistic interpretation.
+
+```{r}
+steps <- 0:14
+weights <- exp(-0.2 * steps)
+
+dw <- as_discrete_weights(steps, weights)
+dw
+```
+
+This representation is useful for quantities such as viral shedding
+or testing sensitivity curves, where absolute scale may not be meaningful.
+
+### Inspection
+
+Discrete PMFs can be inspected using object-aware summary functions.
+For example, the expected delay can be computed directly:
+
+(ex: average delay, that you can divide timeseries to convert  --- undo a convolution. 
+easy solution is divide by mean delay. see gostic. )
+
+```{r}
+mean_discrete(pmf)
+```
+
+```{r}
+summary(pmf)
+```
+
+```{r}
+plot(pmf)
+```
+
+Inspection helpers operate on the discrete object itself,
+avoiding manual extraction of steps and probabilities.
+
+### Manipulation
+
+Once constructed, discrete objects can be combined or reshaped.
+
+#### Convolution via addition
+
+Two discrete objects of the same class can be convolved using the `+` operator.
+For PMFs, this corresponds to the distribution of the sum of two independent delays.
+
+```{r}
+pmf_sum <- pmf + pmf
+pmf_sum
+```
+
+The result preserves the class of the inputs.
+
+```{r}
+plot(pmf_sum)
+```
+
+#### Truncation
+
+Discrete objects can be truncated after construction:
+
+```{r}
+pmf_trunc <- truncate_steps(pmf, max_step = 20)
+pmf_trunc
+```
+
+For PMFs, truncation is followed by re-normalisation.
+For weights, truncation simply drops values outside the specified range.
+
+### Transition between semantics
+
+In some workflows, it is useful to move explicitly from non-normalised
+weights to a probability mass function.
+
+```{r}
+pmf_from_weights <- normalise(dw)
+pmf_from_weights
+```
+
+Normalisation is treated as a semantic transition,
+and is therefore explicitly represented as a function call.
+
+## Series layer: time-indexed collections
+
+In many applications, delay distributions vary over time.
+The series layer provides a lightweight container for
+time-indexed collections of discrete objects.
+
+### Constructing a series
+
+A discrete series can be constructed from a single object
+(replication across time) or from a list of objects.
+
+```{r}
+dates <- as.Date("2020-01-01") + 0:9
+
+pmf_series <- new_discrete_series(
+  pmf,
+  index = dates
+)
+
+pmf_series
+```
+
+Time-varying delays can be represented by supplying a list of objects instead.
+
+### Subsetting and alignment
+
+Discrete series support index-aware subsetting:
+
+```{r}
+pmf_series[dates >= as.Date("2020-01-05")]
+```
+
+Index alignment and class information are preserved.
+
+## Applied layer: integration with epidemic models
+
+Beyond representation and manipulation, discrete objects can be used
+directly in epidemic modelling workflows.
+
+### Convolution matrices
+
+A common operation in discrete-time epidemic models is forward convolution
+through a delay distribution.
+This can be represented as a linear operator in matrix form.
+
+```{r}
+K <- new_convolution_matrix(pmf, n = 10)
+K
+```
+
+When a time-varying PMF series is supplied, the convolution matrix
+automatically reflects the changing delay structure.
+
+## Interoperability with tidy time-series tools
+
+While discrete series have a specialised internal representation,
+they can be converted to tidy time-series objects for interoperability
+with the `tsibble` ecosystem.
+
+```{r}
+library(tsibble)
+
+tsib <- as_tsibble(pmf_series)
+tsib
+```
+
+Discrete objects are stored as list columns, allowing users to
+apply tidy workflows without flattening or losing structure.
+
+For example:
+
+```{r}
+library(dplyr)
+
+tsib |>
+  mutate(
+    mean_delay = vapply(pmf, mean_discrete, numeric(1))
+  )
+```
+
+## Design principles and intended scope
+
+This package is designed around a small set of clear principles:
+
+- Discrete PMFs and weights are first-class objects
+- Semantics (probabilities vs weights) are explicit and enforced by class
+- Core abstractions are kept separate from applied modelling utilities
+- Interoperability is preferred over re-implementing existing ecosystems
+
+The focus is on representing and manipulating discrete delay distributions.
+Model fitting and inference are intentionally left to downstream packages
+that build on these foundations.
