@@ -1,12 +1,23 @@
 #' Subset a discrete_pmf_series
 #'
-#' @description Subsets a `discrete_pmf_series` object by position, logical
-#'   vector, or index value, returning a new `discrete_pmf_series` with the
-#'   selected elements. Class and index alignment are preserved.
+#' @description Subsets a `discrete_pmf_series` object returning a new
+#'   `discrete_pmf_series` with the selected elements. Class and index
+#'   alignment are preserved.
+#'
+#'   Subsetting behaviour depends on the type of `i`:
+#'   - **Integer or numeric**: always treated as positional. `series[3]`
+#'     returns the third element regardless of the index values. To subset
+#'     by a numeric index value, use logical subsetting:
+#'     `series[series$index == 7]`.
+#'   - **Logical**: a logical vector of the same length as the series,
+#'     selecting elements where `TRUE`.
+#'   - **Date or POSIXct**: matched against the series index. An error is
+#'     raised if any supplied dates are not found in the index.
 #'
 #' @param x a `discrete_pmf_series` object
 #' @param i integer positions, a logical vector of the same length as the
-#'   series, or a vector of index values matching the type of `x$index`
+#'   series, or a `Date`/`POSIXct` vector of index values. See Description
+#'   for subsetting behaviour by type.
 #' @param ... unused, present for compatibility with the generic
 #'
 #' @return a `discrete_pmf_series` object
@@ -18,13 +29,24 @@
 
 #' Subset a discrete_weights_series
 #'
-#' @description Subsets a `discrete_weights_series` object by position, logical
-#'   vector, or index value, returning a new `discrete_weights_series` with the
-#'   selected elements. Class and index alignment are preserved.
+#' @description Subsets a `discrete_weights_series` object returning a new
+#'   `discrete_weights_series` with the selected elements. Class and index
+#'   alignment are preserved.
+#'
+#'   Subsetting behaviour depends on the type of `i`:
+#'   - **Integer or numeric**: always treated as positional. `series[3]`
+#'     returns the third element regardless of the index values. To subset
+#'     by a numeric index value, use logical subsetting:
+#'     `series[series$index == 7]`.
+#'   - **Logical**: a logical vector of the same length as the series,
+#'     selecting elements where `TRUE`.
+#'   - **Date or POSIXct**: matched against the series index. An error is
+#'     raised if any supplied dates are not found in the index.
 #'
 #' @param x a `discrete_weights_series` object
 #' @param i integer positions, a logical vector of the same length as the
-#'   series, or a vector of index values matching the type of `x$index`
+#'   series, or a `Date`/`POSIXct` vector of index values. See Description
+#'   for subsetting behaviour by type.
 #' @param ... unused, present for compatibility with the generic
 #'
 #' @return a `discrete_weights_series` object

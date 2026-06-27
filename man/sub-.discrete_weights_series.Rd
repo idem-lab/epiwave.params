@@ -10,7 +10,8 @@
 \item{x}{a \code{discrete_weights_series} object}
 
 \item{i}{integer positions, a logical vector of the same length as the
-series, or a vector of index values matching the type of \code{x$index}}
+series, or a \code{Date}/\code{POSIXct} vector of index values. See Description
+for subsetting behaviour by type.}
 
 \item{...}{unused, present for compatibility with the generic}
 }
@@ -18,7 +19,19 @@ series, or a vector of index values matching the type of \code{x$index}}
 a \code{discrete_weights_series} object
 }
 \description{
-Subsets a \code{discrete_weights_series} object by position, logical
-vector, or index value, returning a new \code{discrete_weights_series} with the
-selected elements. Class and index alignment are preserved.
+Subsets a \code{discrete_weights_series} object returning a new
+\code{discrete_weights_series} with the selected elements. Class and index
+alignment are preserved.
+
+Subsetting behaviour depends on the type of \code{i}:
+\itemize{
+\item \strong{Integer or numeric}: always treated as positional. \code{series[3]}
+returns the third element regardless of the index values. To subset
+by a numeric index value, use logical subsetting:
+\code{series[series$index == 7]}.
+\item \strong{Logical}: a logical vector of the same length as the series,
+selecting elements where \code{TRUE}.
+\item \strong{Date or POSIXct}: matched against the series index. An error is
+raised if any supplied dates are not found in the index.
+}
 }
