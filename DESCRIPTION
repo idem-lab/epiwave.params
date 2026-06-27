@@ -14,7 +14,7 @@ Authors@R: c(
 Description: This package provides tools for discretising, manipulating, and combining delay distributions and weight curves.
 License: Apache License (>= 2)
 Encoding: UTF-8
-Roxygen: list (markdown = TRUE, roclets = c ("namespace", "rd", "srr::srr_stats_roclet"))
+Roxygen: list(markdown = TRUE, roclets = c("namespace", "rd"))
 RoxygenNote: 7.3.3
 URL: https://github.com/idem-lab/epiwave.params
 BugReports: https://github.com/idem-lab/epiwave.params/issues
