@@ -1,9 +1,10 @@
 # @noRd
 print_discrete_series <- function(x, series_type) {
   n <- length(x$index)
-  value_col <- if (series_type == "pmf") "prob" else "weight"
+  # heuristic: fingerprint each element's values to detect constancy
+  # may produce false positives for near-identical floating point values
   is_constant <- length(unique(
-    vapply(x$values, function(v) paste(v[[value_col]], collapse = ","), character(1))
+    vapply(x$values, function(v) paste(.values(v), collapse = ","), character(1))
   )) == 1
   cli::cli_inform(c(
     "A {.cls {class(x)[1]}} object with {n} timepoints",
@@ -66,7 +67,7 @@ print.discrete_weights <- function(x, ...) {
 #'
 #' @export
 print.discrete_pmf_series <- function(x, ...) {
-  print_discrete_series(x, "pmf")
+  invisible(print_discrete_series(x, "pmf"))
 }
 
 #' Print a discrete_weights_series object
@@ -78,5 +79,5 @@ print.discrete_pmf_series <- function(x, ...) {
 #'
 #' @export
 print.discrete_weights_series <- function(x, ...) {
-  print_discrete_series(x, "weights")
+  invisible(print_discrete_series(x, "weights"))
 }
