@@ -58,7 +58,7 @@ via differencing the cumulative distribution function (CDF), with optional
 truncation.
 
 ```{r}
-library(distributional)
+library(epiwave.params)
 
 pmf <- as_discrete_pmf(
   distributional::dist_gamma(shape = 3, rate = 0.5)
@@ -96,7 +96,7 @@ For example, the expected delay can be computed directly:
 easy solution is divide by mean delay. see gostic. )
 
 ```{r}
-mean_discrete(pmf)
+mean(pmf)
 ```
 
 ```{r}
@@ -135,7 +135,7 @@ plot(pmf_sum)
 Discrete objects can be truncated after construction:
 
 ```{r}
-pmf_trunc <- truncate_steps(pmf, max_step = 20)
+pmf_trunc <- truncate_steps(pmf, max_step = 10)
 pmf_trunc
 ```
 
@@ -194,20 +194,6 @@ Index alignment and class information are preserved.
 Beyond representation and manipulation, discrete objects can be used
 directly in epidemic modelling workflows.
 
-### Convolution matrices
-
-A common operation in discrete-time epidemic models is forward convolution
-through a delay distribution.
-This can be represented as a linear operator in matrix form.
-
-```{r}
-K <- new_convolution_matrix(pmf, n = 10)
-K
-```
-
-When a time-varying PMF series is supplied, the convolution matrix
-automatically reflects the changing delay structure.
-
 ## Interoperability with tidy time-series tools
 
 While discrete series have a specialised internal representation,
@@ -231,7 +217,7 @@ library(dplyr)
 
 tsib |>
   mutate(
-    mean_delay = vapply(pmf, mean_discrete, numeric(1))
+    mean_delay = vapply(pmf, mean, numeric(1))
   )
 ```
 
