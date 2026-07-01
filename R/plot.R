@@ -9,7 +9,7 @@
 #' @importFrom ggplot2 ggplot aes geom_col labs theme_minimal
 #' @export
 plot.discrete_pmf <- function(x, y, ...) {
-  ggplot2::ggplot(x, ggplot2::aes(x = step, y = prob)) +
+  ggplot2::ggplot(x, ggplot2::aes(x = .data$step, y = .data$prob)) +
     ggplot2::geom_col(width = 0.8, ...) +
     ggplot2::labs(
       x = "Step",
@@ -29,7 +29,7 @@ plot.discrete_pmf <- function(x, y, ...) {
 #' @importFrom ggplot2 ggplot aes geom_line labs theme_minimal
 #' @export
 plot.discrete_weights <- function(x, y, ...) {
-  ggplot2::ggplot(x, ggplot2::aes(x = step, y = weight)) +
+  ggplot2::ggplot(x, ggplot2::aes(x = .data$step, y = .data$weight)) +
     ggplot2::geom_line(linewidth = 0.8, ...) +
     ggplot2::labs(
       x = "Step",

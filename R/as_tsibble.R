@@ -58,7 +58,7 @@ as_tsibble_discrete_series <- function(x, value_col, ...) {
 
   tsibble::as_tsibble(
     df,
-    index = index,
+    index = "index",
     ...
   )
 }

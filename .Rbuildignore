@@ -3,3 +3,8 @@
 ^README\.Rmd$
 ^\.positai$
 ^\.claude$
+^\.github$
+^CODE_OF_CONDUCT\.md$
+^paper\.bib$
+^paper\.html$
+^paper\.md$

@@ -4,9 +4,10 @@
 \alias{as_discrete_pmf}
 \alias{as_discrete_pmf.distribution}
 \alias{as_discrete_pmf.numeric}
-\alias{as_discrete_pmf.default}
-\alias{as_discrete_pmf.discrete_weights}
+\alias{as_discrete_pmf.ecdf}
 \alias{as_discrete_pmf.difftime}
+\alias{as_discrete_pmf.discrete_weights}
+\alias{as_discrete_pmf.default}
 \title{Convert a distribution, empirical data, or discrete weights to a discrete PMF}
 \usage{
 as_discrete_pmf(x, ...)
@@ -29,9 +30,14 @@ as_discrete_pmf(x, ...)
   ...
 )
 
-\method{as_discrete_pmf}{default}(x, ...)
-
-\method{as_discrete_pmf}{discrete_weights}(x, ...)
+\method{as_discrete_pmf}{ecdf}(
+  x,
+  min_step = NULL,
+  max_step = NULL,
+  min_step_quantile = 0,
+  max_step_quantile = 0.99,
+  ...
+)
 
 \method{as_discrete_pmf}{difftime}(
   x,
@@ -41,11 +47,16 @@ as_discrete_pmf(x, ...)
   max_step_quantile = 0.99,
   ...
 )
+
+\method{as_discrete_pmf}{discrete_weights}(x, ...)
+
+\method{as_discrete_pmf}{default}(x, ...)
 }
 \arguments{
 \item{x}{a \code{distributional} object, a numeric vector of observed values
-(e.g. computed delays) from which an empirical PMF is derived, or a
-\code{discrete_weights} object to be normalised.}
+(e.g. computed delays) from which an empirical PMF is derived, an \code{ecdf}
+object, a \code{difftime} object, or a \code{discrete_weights} object to be
+normalised.}
 
 \item{...}{additional arguments passed to methods}
 
@@ -72,8 +83,8 @@ a \code{discrete_pmf} object
 }
 \description{
 Converts a \code{distributional} object, a numeric vector of
-observed values, or a \code{discrete_weights} object to a \code{discrete_pmf}
-object.
+observed values, an \code{ecdf} object, a \code{difftime} object, or a
+\code{discrete_weights} object to a \code{discrete_pmf} object.
 
 When \code{x} is a \code{distributional} object, the PMF is derived analytically
 from the CDF via CDF-differencing with quantile-based truncation and
@@ -81,6 +92,12 @@ normalisation.
 
 When \code{x} is a numeric vector, the PMF is derived empirically from the
 observed values using an empirical CDF.
+
+When \code{x} is an \code{ecdf} object, the supplied empirical CDF is used directly
+without reconstruction.
+
+When \code{x} is a \code{difftime} object, it is converted to numeric using its
+recorded units and then treated as the numeric case.
 
 When \code{x} is a \code{discrete_weights} object, the PMF is derived by
 normalising the weight values to sum to 1. This is only meaningful if
@@ -90,6 +107,6 @@ The truncation bounds are set either explicitly via \code{min_step} and
 \code{max_step}, or derived from quantiles of the distribution via
 \code{min_step_quantile} and \code{max_step_quantile}. If both are supplied,
 the explicit bounds take precedence and a warning is issued. Truncation
-bounds only apply when \code{x} is a \code{distributional} object or numeric
-vector.
+bounds only apply when \code{x} is a \code{distributional}, numeric, \code{ecdf}, or
+\code{difftime} object.
 }

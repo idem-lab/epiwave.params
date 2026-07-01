@@ -21,15 +21,16 @@ BugReports: https://github.com/idem-lab/epiwave.params/issues
 Suggests:
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0),
-    tsibble
+    testthat (>= 3.0.0)
 Imports:
     cli,
     distributional,
     dplyr,
     ggplot2,
+    rlang,
     stats,
     tibble,
-    tidyr
+    tidyr,
+    tsibble
 VignetteBuilder: knitr
 Config/testthat/edition: 3

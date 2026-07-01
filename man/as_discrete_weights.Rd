@@ -21,21 +21,6 @@ as_discrete_weights(x, ...)
 \method{as_discrete_weights}{numeric}(x, y = NULL, ...)
 
 \method{as_discrete_weights}{default}(x, ...)
-
-as_discrete_weights(x, ...)
-
-\method{as_discrete_weights}{distribution}(
-  x,
-  min_step = NULL,
-  max_step = NULL,
-  min_step_quantile = 0,
-  max_step_quantile = 0.99,
-  ...
-)
-
-\method{as_discrete_weights}{numeric}(x, y = NULL, ...)
-
-\method{as_discrete_weights}{default}(x, ...)
 }
 \arguments{
 \item{x}{a \code{distributional} object, or a numeric vector of step values
@@ -66,34 +51,10 @@ Only used when \code{x} is a numeric vector. Defaults to \code{NULL}.}
 }
 \value{
 a \code{discrete_weights} object: a data frame with columns \code{step} and
-\code{mass} (a non-negative value proportional to the contribution at each
-step).
-
-a \code{discrete_weights} object: a data frame with columns \code{step} and
-\code{mass} (a non-negative value proportional to the contribution at each
+\code{weight} (a non-negative value proportional to the contribution at each
 step).
 }
 \description{
-Converts a \code{distributional} object or empirical step/value
-data to a \code{discrete_weights} object.
-
-When \code{x} is a \code{distributional} object, the weights are derived
-analytically from the CDF via CDF-differencing with quantile-based
-truncation. The resulting values are not normalised and do not sum to 1.
-
-When \code{x} is a numeric vector of step values and \code{y} is a numeric vector
-of corresponding weight values, the weights are constructed directly from
-the supplied values. This is useful when empirical weights are available
-from external sources, for example seroprevalence curves (probability of
-testing positive by step since infection) or wastewater shedding curves
-(viral shedding as a proportion of peak by step since infection).
-
-The truncation bounds are set either explicitly via \code{min_step} and
-\code{max_step}, or derived from quantiles of the distribution via
-\code{min_step_quantile} and \code{max_step_quantile}. If both are supplied,
-the explicit bounds take precedence and a warning is issued. Truncation
-bounds only apply when \code{x} is a \code{distributional} object.
-
 Converts a \code{distributional} object or empirical step/value
 data to a \code{discrete_weights} object.
 

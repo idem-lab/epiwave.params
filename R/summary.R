@@ -4,6 +4,8 @@
 #' @param ... unused, present for compatibility with the generic `summary`
 #'   method
 #'
+#' @importFrom stats var
+#'
 #' @return a named numeric vector of summary statistics, invisibly
 #'
 #' @export
@@ -59,7 +61,7 @@ summary.discrete_weights <- function(object, ...) {
   invisible(stats)
 }
 
-# @noRd
+#' @noRd
 summarise_series_index <- function(index) {
   if (inherits(index, "Date")) {
     list(

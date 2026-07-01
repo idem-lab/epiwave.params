@@ -17,6 +17,7 @@
 #'
 #' @importFrom dplyr rename left_join mutate group_by summarise
 #' @importFrom tidyr expand_grid
+#' @importFrom rlang .data
 #'
 #' @export
 add_discrete <- function(discrete1, discrete2) {
